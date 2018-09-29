@@ -459,7 +459,7 @@
                 </div> 
 
                 <div class="single-product-bottom-section">
-                  <h3>{!! get_product_title($products['id']) !!}</h3>
+                  <h3>{!! get_product_title($products['id']) !!} </h3>
 
                   @if(get_product_type($products['id']) == 'simple_product')
                     <p>{!! price_html( get_product_price($products['id']), get_frontend_selected_currency() ) !!}</p>
