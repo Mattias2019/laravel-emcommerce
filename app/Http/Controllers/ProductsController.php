@@ -23,6 +23,7 @@ use shopist\Http\Controllers\OptionController;
 use shopist\Library\CommonFunction;
 use Carbon\Carbon;
 use shopist\Models\SaveCustomDesign;
+use shopist\Library\GetFunction;
 
 
 class ProductsController extends Controller
@@ -2224,10 +2225,67 @@ class ProductsController extends Controller
    * @param object id
    * @return array
    */
+  public function getCatByObjecterId($object_id){
+    $get_cat_array = array('term_id' => array(), 'term_details' => array());
+    $get_cat_list  =  DB::table('terms')
+                      ->where(['object_relationships.object_id' => $object_id, 'terms.type' => 'product_cat' ])
+                      ->join('object_relationships', 'object_relationships.term_id', '=', 'terms.term_id')
+                      ->select('terms.*')        
+                      ->get()
+                      ->toArray();
+     
+    if(count($get_cat_list) > 0){
+      $term_id   = array();
+      $term_data = array();
+      
+      foreach($get_cat_list as $row){
+        array_push($term_id, $row->term_id);
+        
+        $get_term = $this->getTermDataById( $row->term_id );
+        if(count($get_term) > 0){
+          array_push($term_data, array_shift( $get_term ));
+        }
+      }
+      
+      $get_cat_array['term_id']      = $term_id;
+      $get_cat_array['term_details'] = $term_data;
+    }
+    
+    return $get_cat_array;
+  }
   public function getCatByObjectId($object_id){
     $get_cat_array = array('term_id' => array(), 'term_details' => array());
     $get_cat_list  =  DB::table('terms')
                       ->where(['object_relationships.object_id' => $object_id, 'terms.type' => 'product_cat' ])
+                      ->join('object_relationships', 'object_relationships.term_id', '=', 'terms.term_id')
+                      ->select('terms.*')        
+                      ->get()
+                      ->toArray();
+     
+    if(count($get_cat_list) > 0){
+      $term_id   = array();
+      $term_data = array();
+      
+      foreach($get_cat_list as $row){
+        array_push($term_id, $row->term_id);
+        
+        $get_term = $this->getTermDataById( $row->term_id );
+        if(count($get_term) > 0){
+          array_push($term_data, array_shift( $get_term ));
+        }
+      }
+      
+      $get_cat_array['term_id']      = $term_id;
+      $get_cat_array['term_details'] = $term_data;
+    }
+    
+    return $get_cat_array;
+  }
+  // 900
+   public function getCcatByObjectId($object_id){
+    $get_cat_array = array('term_id' => array(), 'term_details' => array());
+    $get_cat_list  =  DB::table('terms')
+                      ->where(['object_relationships.object_id' => $object_id, 'terms.type' => 'product_cat', 'terms.fb' =>1 ])
                       ->join('object_relationships', 'object_relationships.term_id', '=', 'terms.term_id')
                       ->select('terms.*')        
                       ->get()
@@ -3402,7 +3460,95 @@ class ProductsController extends Controller
    * @param product id
    * @return array
    */
-  
+
+  // 900
+public function getBacksideItems($product_id){
+    $backside_items  =  array();
+    $backside_products  =  array();
+    
+    //categories product search
+    $cat_lists = $this->getCcatByObjectId($product_id);
+    // get_product_type($single_product_details['id']) == 'customizable_product'
+   
+    
+    if(count($cat_lists) > 0 && isset($cat_lists['term_id']) && count($cat_lists['term_id']) > 0){
+      foreach($cat_lists['term_id'] as $cat_id){
+        $cat_term = $this->getTermDataById($cat_id);
+       
+        if(count($cat_term) > 0){
+
+          $get_cat_product_list  =  $this->getProductsByTermId($cat_term[0]['term_id']);
+          
+          if(count($get_cat_product_list) >0){
+            foreach($get_cat_product_list as $product){
+              if($product->id != $product_id ){
+                array_push($backside_items, $product->id);
+              }
+            }
+          }
+        }
+      }
+    }
+   
+    //tags product search
+    $tag_lists = $this->getTagsByObjectId($product_id);
+    
+    if(count($tag_lists) > 0 && isset($tag_lists['term_id']) && count($tag_lists['term_id']) > 0){
+      foreach($tag_lists['term_id'] as $tag_id){
+        $tag_term = $this->getTermDataById($tag_id);
+        
+        if(count($tag_term) > 0){
+          $get_tag_productListContent  =  $this->getProductsByTermId($tag_term[0]['term_id']);
+          
+          if(count($get_tag_product_list) > 0 ){
+            foreach($get_tag_product_list as $tag_product){
+             if($tag_product->id != $product_id){
+               array_push($backside_items, $tag_product->id);
+             }
+            }
+          }
+        }
+      }
+    }
+     
+    //brand product search
+    $brand_lists = $this->getManufacturerByObjectId($product_id);
+    
+    if(count($brand_lists) > 0 && isset($brand_lists['term_id']) && count($brand_lists['term_id']) > 0){
+      foreach($brand_lists['term_id'] as $brand_id){
+        $brand_term = $this->getTermDataById($brand_id);
+        
+        if(count($brand_term) > 0){
+          $get_brands_product_list  =  $this->getProductsByTermId($brand_term[0]['term_id']);
+          
+          if(count($get_brands_product_list) > 0){
+            foreach($get_brands_product_list as $brand_product){
+              if($brand_product->id != $product_id && get_product_type($product_id) == 'customizable_product'){
+                array_push($backside_items, $brand_product->id);
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    
+    if(count($backside_items) > 0){
+      $products_id_array = array_unique($backside_items);
+   
+      if(count($products_id_array) > 0){
+        foreach($products_id_array as $backside_products_id){
+          $get_post_meta  =  ProductExtra :: where(['product_id' => $backside_products_id, 'key_name' => '_product_enable_as_custom_design'])->first();
+
+          if(!empty($get_post_meta) && $get_post_meta->key_value == 'yes'){
+            array_push($backside_products, $this->getProductDataById($backside_products_id));
+          }  
+        }
+      }
+    }
+    
+    return $backside_products;
+  }
   public function getRelatedItems($product_id){
     $related_items  =  array();
     $related_products  =  array();

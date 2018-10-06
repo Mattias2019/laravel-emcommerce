@@ -185,7 +185,7 @@
           @if(count(get_product_brands_lists($single_product_details['id'])) > 0)
             <p><label>{{ trans('frontend.brand_label') }}:</label><span>{{ get_single_page_product_brands_lists( get_product_brands_lists($single_product_details['id']) ) }}</span></p>
           @endif
-          
+          <!-- 900 -->
           @if(get_single_page_product_categories_lists($single_product_details['id']))
             <p><label>{{ trans('frontend.category_label') }}:</label><span>{{ get_single_page_product_categories_lists($single_product_details['id']) }}</span></p>
           @endif
@@ -430,8 +430,8 @@
         </div>
       </div>
     </div>  
-            
-    @if(count($related_items) > 0)    
+          
+    @if(count($related_items) > 0 && get_product_type($single_product_details['id']) != 'customizable_product')   
     <div class="row">
       <div id="related_products">
         <div class="content-title">
@@ -532,11 +532,86 @@
                 </div>
               </div>
             </div>
+          
           @endforeach
         </div>      
       </div>
     </div>
     @endif
+<!-- 900 -->
+  <!-- backside product -->
+     @if(count($backside_items) > 0 && get_product_type($single_product_details['id']) == 'customizable_product')   
+    <div class="row">
+      <div id="related_products">
+        <div class="content-title">
+          <h2 class="text-center title-under">Select your '{!!
+            
+            explode(",",get_single_page_product_categories_lists($single_product_details['id']))[0] 
+             !!}' BackSide</h2>
+        </div>
+        
+        <div class="related-products-content">
+          @foreach($backside_items as $products)
+            <?php 
+            $reviews          = get_comments_rating_details($products['id'], 'product');
+            $reviews_settings = get_reviews_settings_data($products['id']);      
+            ?>
+            <div class="col-xs-12 col-sm-3 col-md-3 extra-padding grid-view">
+              <div class="hover-product">
+                <div class="hover">
+                  @if($products['_product_related_images_url']->product_image)
+                  <img class="img-responsive" src="{{ get_image_url($products['_product_related_images_url']->product_image) }}" alt="{{ basename($products['_product_related_images_url']->product_image) }}" />
+                  @else
+                  <img class="img-responsive" src="{{ default_placeholder_img_src() }}" alt="" />
+                  @endif
+
+                 
+                  <div class="overlay">
+                    <!-- <button class="info quick-view-popup" data-id="{{ $products['id'] }}">{{ trans('frontend.quick_view_label') }}</button> -->
+                
+                    <input type="radio" name="sbs" value="{{ $products['id'] }}" id="{{ $products['id'] }}" class="form-radio" checked></label>
+                  </div>
+                </div> 
+
+                <div class="single-product-bottom-section">
+                  <h3>{!! get_product_title($products['id']) !!} </h3>
+
+                 
+                </div>
+              </div>
+            </div>
+          
+          @endforeach
+        </div>      
+      </div>
+    </div>
+   
+    <!-- <a disabled href="{{ route('customize-page', $single_product_details['post_slug']) }}" class="btn btn-lg btn-success  product-customize-bg continue"><i class="fa fa-wrench"></i>  {!! trans('Continue') !!}</a> -->
+    <a disabled href="javascript:void()" onclick="gotopage()" class="btn btn-lg btn-success  product-customize-bg continue"><i class="fa fa-wrench"></i>  {!! trans('Continue') !!}</a>
+
+    @endif
+<script type="text/javascript">
+  function gotopage(){
+    var backside_id=$("input[name='sbs']:checked"). val()
+    location.href="/product/customize/{{str_replace(" ","-", $single_product_details['post_title']) }}/"+backside_id;
+  }  
+$(document).ready(function() {
+   $('.form-radio').click(function(){
+       $("a").removeAttr('disabled');
+
+       $('.continue').removeClass('btn-success');
+       $('.continue').addClass('btn-style');
+      //  $('a').attr('enabled','enabled'); 
+   });
+});
+
+
+</script>      
+
+
+
+
+
     
     @if(count($upsell_products) > 0)
     <br>

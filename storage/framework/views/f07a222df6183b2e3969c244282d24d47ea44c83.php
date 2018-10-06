@@ -88,11 +88,12 @@
             <tr>
               <th><?php echo trans('admin.product_image'); ?></th>
               <th><?php echo trans('admin.product_name'); ?></th>
-              <th><?php echo trans('admin.product_sku'); ?></th>
+              <th><?php echo trans('admin.product_sku'); ?></th> 
               <th><?php echo trans('admin.product_type'); ?></th>
               <th><?php echo trans('admin.product_price'); ?></th>
               <th><?php echo trans('admin.product_status'); ?></th>
-              <th><?php echo trans('admin.vendor_name_label'); ?></th>
+              <th><?php echo trans('admin.vendor_name_label'); ?></th> 
+               <th><?php echo trans('Front-Back'); ?></th>
               <th><?php echo trans('admin.action'); ?></th>
             </tr>
           </thead>
@@ -129,7 +130,18 @@
                 <?php endif; ?>
                 
                 <td><?php echo get_vendor_name( $row->author_id ); ?></td>
-                
+<!--                 
+                <?php if($row['fb'] == 0): ?>
+                <td><?php echo trans('Front End'); ?></td>
+                <?php else: ?>
+                <td><?php echo trans('Back End'); ?></td>
+                <?php endif; ?> -->
+
+                <?php if($row['pfb'] ==1): ?>
+                <td><?php echo trans('Backend Product'); ?></td>
+                <?php else: ?>
+                <td><?php echo trans('Frontend Product'); ?></td>
+                <?php endif; ?>
                 <td>
                   <div class="btn-group">
                     <button class="btn btn-success btn-flat" type="button"><?php echo trans('admin.action'); ?></button>
@@ -163,6 +175,7 @@
               <th><?php echo trans('admin.product_price'); ?></th>
               <th><?php echo trans('admin.product_status'); ?></th>
               <th><?php echo trans('admin.vendor_name_label'); ?></th>
+              <th><?php echo trans('Front-Back'); ?></th>
               <th><?php echo trans('admin.action'); ?></th>
             </tr>
           </tfoot>

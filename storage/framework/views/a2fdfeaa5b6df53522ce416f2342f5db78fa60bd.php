@@ -1,6 +1,11 @@
 <div class="product-designer-content clearfix">
   <div class="product-designer-top-menu">
     <div class="clearfix">
+      <ul class="pull-left">
+       <li><a id="downloadImgLink" href="#" download="product.png"><span class="fa fa-search-plus icon-span"></span><span class="text-span"> Zoom </span></a></li>
+       <li class="icon-img-pdf"><span class="fa fa-object-group icon-span"></span><span class="text-span">Magnify</span></li>
+       <li class="icon-img-print"><span class="fa fa-share icon-span"></span><span class="text-span">Reset</span></li>
+     </ul>
       <ul class="pull-right">
         <li><a id="downloadImgLink" href="#" download="product.png"><span class="fa fa-download icon-span"></span><span class="text-span"><?php echo trans('designer.download_label'); ?></span></a></li>
         <li class="icon-img-pdf"><span class="fa fa-print icon-span"></span><span class="text-span"><?php echo trans('designer.pdf_label'); ?></span></li>
@@ -28,10 +33,22 @@
       <ul>
         <?php $count = 0;?>
         <?php $__currentLoopData = $designer_img_elments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        
         <li <?php if($count == 0) {?> class="selected-swap"<?php }?> data-id="<?php echo e($row->id); ?>" data-design_img_url="<?php echo e(get_image_url($row->design_img_url)); ?>" data-design_trans_img_url="<?php echo e(get_image_url($row->design_trans_img_url)); ?>"><img src="<?php echo e(get_image_url($row->design_title_icon)); ?>"><span><?php echo $row->title_label; ?></span></li>
+        <input type="hidden" name="hf_design_save_json_data_<?php echo e($row->id); ?>" id="hf_design_save_json_data_<?php echo e($row->id); ?>" value="<?php echo e($design_save_data); ?>">
         <?php $count ++;?>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-      </ul>
+        <?php if(isset($designer_img_elmentsback)): ?>
+        <?php if(count($designer_img_elmentsback)>0 ): ?>
+        <?php $__currentLoopData = $designer_img_elmentsback; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        
+        <li <?php if($count == 0) {?> class="selected-swap"<?php }?> data-id="<?php echo e($row->id); ?>" data-design_img_url="<?php echo e(get_image_url($row->design_img_url)); ?>" data-design_trans_img_url="<?php echo e(get_image_url($row->design_trans_img_url)); ?>"><img src="<?php echo e(get_image_url($row->design_title_icon)); ?>"><span><?php echo $row->title_label; ?></span></li>
+        <input type="hidden" name="hf_design_save_json_data_<?php echo e($row->id); ?>" id="hf_design_save_json_data_<?php echo e($row->id); ?>" value="<?php echo e($design_save_databackside); ?>">
+        <?php $count ++;?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>    
+        <?php endif; ?> 
+        <?php endif; ?>
+       </ul>
     </div>
     <div style="clear:both;"></div>
   </div>
@@ -269,7 +286,7 @@
   </div>
   <div id="designer-shadow-layer">
     <div class="designer-add-to-cart-loader">
-      <img src="http://localhost/shopist/public/images/ajax-loader.gif" id="img-load">
+      <img src="/images/ajax-loader.gif" id="img-load">
     </div>
   </div>
 </div>
@@ -277,6 +294,7 @@
 <input type="hidden" name="track_is_loaded_first" id="track_is_loaded_first" value="<?php echo e(get_image_url($designer_img_elments[0]->design_img_url)); ?>">
 <input type="hidden" name="track_is_trans_loaded_first" id="track_is_trans_loaded_first" value="<?php echo e(get_image_url($designer_img_elments[0]->design_trans_img_url)); ?>">
 <input type="hidden" name="hf_design_save_json_data" id="hf_design_save_json_data" value="<?php echo e($design_save_data); ?>">
+
 <style type="text/css">
   .select2-drop {
     z-index: 99999;

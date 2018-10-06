@@ -222,7 +222,7 @@ designerControl.event =
     if($('.product-designer-swap-content').length>0){
       $('.product-designer-swap-content ul li').on('click', function(){
         $(this).parents('.product-designer-swap-content').find('.selected-swap').removeClass('selected-swap');
-        $(this).addClass('selected-swap');
+        $(this).addClass('selected-swap');        
         designer.function._manage_swap_content($(this));
       })
     }

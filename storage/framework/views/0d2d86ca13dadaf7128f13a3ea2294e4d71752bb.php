@@ -6,11 +6,15 @@
   <br>
   <div class="row">
     <div class="col-sm-12">
+      <?php if(isset($designer_hf_databackside)): ?>
+      <?php echo $__env->make('pages.frontend.frontend-pages.frontend-designer-html', array('designer_hf_data' => $designer_hf_data,'designer_hf_databackside'=> $designer_hf_databackside, 'designer_img_elments' => $single_product_details['_product_custom_designer_data'],'designer_img_elmentsback' => $single_product_detailsbackside['_product_custom_designer_data'], 'design_save_data' => $design_json_data,'design_save_databackside' => $design_json_databackside), array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+      <?php else: ?>
       <?php echo $__env->make('pages.frontend.frontend-pages.frontend-designer-html', array('designer_hf_data' => $designer_hf_data, 'designer_img_elments' => $single_product_details['_product_custom_designer_data'], 'design_save_data' => $design_json_data), array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+      <?php endif; ?>
     </div>
   </div>
   <br>
-  <div class="row">
+  <div class="row"> 
     <div class="col-sm-12">
       <h1 class="product-title"><?php echo e($single_product_details['post_title']); ?></h1>
       <?php if(count($attr_lists) >0 && count(get_product_variations_with_data($single_product_details['id']))>0): ?>

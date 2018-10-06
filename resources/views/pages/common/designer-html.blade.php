@@ -50,10 +50,12 @@
           <div data-id="{{ $row->id }}" data-design_img_url="{{ get_image_url($row->design_img_url) }}" data-design_trans_img_url="{{ get_image_url($row->design_trans_img_url) }}" class="design-title-items">
             <div><img src="{{ get_image_url($row->design_title_icon) }}"></div>
             <div class="design-title-label">{!! $row->title_label !!}</div>
+            <input type="hidden" name="hf_design_save_json_data" id="hf_design_save_json_data_{{$row->id}}" value="{{ $design_save_data }}">
+
           </div>
           @endforeach
         </div>
-        
+      
         
         <div class="canvas-design-panel">
           <canvas id="designer_canvas"></canvas>

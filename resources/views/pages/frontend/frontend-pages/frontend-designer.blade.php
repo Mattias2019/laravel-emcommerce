@@ -7,13 +7,17 @@
   <br>
   <div class="row">
     <div class="col-sm-12">
+      @if(isset($designer_hf_databackside))
+      @include('pages.frontend.frontend-pages.frontend-designer-html', array('designer_hf_data' => $designer_hf_data,'designer_hf_databackside'=> $designer_hf_databackside, 'designer_img_elments' => $single_product_details['_product_custom_designer_data'],'designer_img_elmentsback' => $single_product_detailsbackside['_product_custom_designer_data'], 'design_save_data' => $design_json_data,'design_save_databackside' => $design_json_databackside))
+      @else
       @include('pages.frontend.frontend-pages.frontend-designer-html', array('designer_hf_data' => $designer_hf_data, 'designer_img_elments' => $single_product_details['_product_custom_designer_data'], 'design_save_data' => $design_json_data))
+      @endif
     </div>
   </div>
   <br>
-  <div class="row">
+  <div class="row"> 
     <div class="col-sm-12">
-      <h1 class="product-title">{{ $single_product_details['post_title'] }}</h1>
+      <h1 class="product-title">{{  $single_product_details['post_title'] }}</h1>
       @if(count($attr_lists) >0 && count(get_product_variations_with_data($single_product_details['id']))>0)
       <div class="product-pricing"><span class="solid-price">{!! get_product_variations_min_to_max_price_html($currency_symbol, $single_product_details['id']) !!} </span></div><hr>
         @include('includes.frontend.variations-html', array('attr_lists' => $attr_lists, 'single_product_details' => $single_product_details))

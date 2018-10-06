@@ -1,6 +1,6 @@
 var designer = designer || {};
 var designerCanvasObj, selectedObj;
-var designer_settings_data, designer_img_elements, design_save_json_data;
+var designer_settings_data, designer_img_elements, design_save_json_data, design_save_json_databackside;
 var $lineHeightRange, $textShadowX, $textShadowY, $shadowBlur, $textOpacity, $curveRadius, $curveSpacing, $imgOpacity;
 var ary = [];
 var img_data_ary = [];
@@ -8,12 +8,12 @@ var prev_canvobj = 0;
 var canvDataobj = {};
 var baseURL = '';
 var designerLocalizationString;
-
+// 900
 designer.onPageLoad = {
 _designer_init:function()
 {
   if($('#hf_base_url').length>0){
-    baseURL = $('#hf_base_url').val();
+    baseURL = $('#hf_base_url').val();    
   }
   
   if($('#frontend_all_msg_with_localization').length>0){
@@ -22,16 +22,18 @@ _designer_init:function()
   
   if( $('#designer_canvas').length>0 && $('#hf_designer_settings_json').length>0 && $('#hf_custom_designer_data').length>0 && $('#hf_designer_settings_json').val() && $('#hf_custom_designer_data').val() ){
     if($('#hf_designer_settings_json').length>0 && $('#hf_designer_settings_json').val().length>0){
-      designer_settings_data = JSON.parse( $('#hf_designer_settings_json').val() );
+      designer_settings_data = JSON.parse( $('#hf_designer_settings_json').val() );      
     }
     
     if($('#hf_custom_designer_data').length>0 && $('#hf_custom_designer_data').val().length>0){
       designer_img_elements = JSON.parse( $('#hf_custom_designer_data').val() );
     }
+ 
     
     if($('#hf_design_save_json_data').length>0 && $('#hf_design_save_json_data').val().length>0){
       design_save_json_data = $.parseJSON($('#hf_design_save_json_data').val());
     }
+    
     
     if ($('#swap-popover-content').find('.design-title-items').length >0 ){
       prev_canvobj = $('#swap-popover-content .design-title-items:first-child').data('id');
@@ -1169,13 +1171,12 @@ designer.function = {
   _manage_swap_content:function(obj){
     var current_item_id = obj.data('id');
     allPanelHide();
-    
     canvDataobj[prev_canvobj] = {objId:prev_canvobj, customdata:JSON.stringify(designerCanvasObj.toJSON(['id','name','itemName', 'objTrackId', 'layerName', 'lockMovementX', 'lockMovementY', 'lockScalingX', 'lockScalingY', 'lockRotation', 'hasControls', 'hasBorders', 'lockSystem', 'textAlign', 'radius', 'spacing', 'hasRotatingPoint', 'padding', 'angle', 'strokeWidth', 'stroke', 'borderColor', 'cornerSize', 'cornerShape', 'cornerBackgroundColor', 'cornerPadding', 'reverse', 'shadow', 'filters'])), screenShot:designerCanvasObj.toDataURL()};
     
     designerCanvasObj.clear();
     prev_canvobj = current_item_id;
     
-    
+    // 900
     if(typeof(canvDataobj[current_item_id])!= 'undefined'){
       var parseJson = JSON.parse(canvDataobj[current_item_id].customdata);
       setCanvasDimension(parseJson.backgroundImage.width, parseJson.backgroundImage.height, function(status){
@@ -1204,7 +1205,7 @@ designer.function = {
       });
     }
     else{
-      if(design_save_json_data && $('#hf_design_save_json_data').val().length > 0){
+      if(design_save_json_data && $('#hf_design_save_json_data_'+obj.data('id')).val().length > 0){
         loadSaveJsonToCanvas(current_item_id, function(status){});
         
         if(!obj.data('design_trans_img_url')){
@@ -1326,7 +1327,7 @@ var getItemByName = function(name)
 
 var loadSaveJsonToCanvas = function(selected_obj_id, callback){
   var selected_json_data = '';
-  
+  design_save_json_data=$.parseJSON($('#hf_design_save_json_data_'+selected_obj_id).val());
   $.each(design_save_json_data, function(key, val) { 
     if(key === selected_obj_id){
       selected_json_data = val.customdata;

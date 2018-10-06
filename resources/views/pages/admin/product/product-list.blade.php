@@ -89,11 +89,12 @@
             <tr>
               <th>{!! trans('admin.product_image') !!}</th>
               <th>{!! trans('admin.product_name') !!}</th>
-              <th>{!! trans('admin.product_sku') !!}</th>
+              <th>{!! trans('admin.product_sku') !!}</th> 
               <th>{!! trans('admin.product_type') !!}</th>
               <th>{!! trans('admin.product_price') !!}</th>
               <th>{!! trans('admin.product_status') !!}</th>
-              <th>{!! trans('admin.vendor_name_label') !!}</th>
+              <th>{!! trans('admin.vendor_name_label') !!}</th> 
+               <th>{!! trans('Front-Back') !!}</th>
               <th>{!! trans('admin.action') !!}</th>
             </tr>
           </thead>
@@ -130,7 +131,18 @@
                 @endif
                 
                 <td>{!! get_vendor_name( $row->author_id ) !!}</td>
-                
+<!--                 
+                @if($row['fb'] == 0)
+                <td>{!! trans('Front End') !!}</td>
+                @else
+                <td>{!! trans('Back End') !!}</td>
+                @endif -->
+
+                @if($row['pfb'] ==1)
+                <td>{!! trans('Backend Product') !!}</td>
+                @else
+                <td>{!! trans('Frontend Product') !!}</td>
+                @endif
                 <td>
                   <div class="btn-group">
                     <button class="btn btn-success btn-flat" type="button">{!! trans('admin.action') !!}</button>
@@ -164,6 +176,7 @@
               <th>{!! trans('admin.product_price') !!}</th>
               <th>{!! trans('admin.product_status') !!}</th>
               <th>{!! trans('admin.vendor_name_label') !!}</th>
+              <th>{!! trans('Front-Back') !!}</th>
               <th>{!! trans('admin.action') !!}</th>
             </tr>
           </tfoot>

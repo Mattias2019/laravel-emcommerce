@@ -1213,16 +1213,25 @@ Route::get( '/', [
   'as'   => 'home-page'
 ]);
 
-Route::get( '/shop', [
-  'uses' => 'Frontend\FrontendManagerController@productsPageContent',
-  'as'   => 'shop-page'
+// Route::get( '/shop', [
+//   'uses' => 'Frontend\FrontendManagerController@productsPageContent',
+//   'as'   => 'shop-page'
+// ]);
+
+Route::get('/shop',[
+  'uses'=> 'Frontend\FrontendManagerController@ProductFristPageContent',
+  'as'  => 'shop-page'
 ]);
 
 Route::get( '/product/details/{details_slug}', [
   'uses' => 'Frontend\FrontendManagerController@productSinglePageContent',
   'as'   => 'details-page'
 ]);
-
+// 900
+Route::get( '/product/customize/{param1}/{param2}', [
+  'uses' => 'Frontend\FrontendManagerController@designerSinglePageContents',
+  'as'   => 'customizable-page'
+]);
 Route::get( '/product/customize/{details_id}', [
   'uses' => 'Frontend\FrontendManagerController@designerSinglePageContent',
   'as'   => 'customize-page'

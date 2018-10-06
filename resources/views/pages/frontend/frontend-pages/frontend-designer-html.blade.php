@@ -1,6 +1,11 @@
 <div class="product-designer-content clearfix">
   <div class="product-designer-top-menu">
     <div class="clearfix">
+      <ul class="pull-left">
+       <li><a id="downloadImgLink" href="#" download="product.png"><span class="fa fa-search-plus icon-span"></span><span class="text-span"> Zoom </span></a></li>
+       <li class="icon-img-pdf"><span class="fa fa-object-group icon-span"></span><span class="text-span">Magnify</span></li>
+       <li class="icon-img-print"><span class="fa fa-share icon-span"></span><span class="text-span">Reset</span></li>
+     </ul>
       <ul class="pull-right">
         <li><a id="downloadImgLink" href="#" download="product.png"><span class="fa fa-download icon-span"></span><span class="text-span">{!! trans('designer.download_label') !!}</span></a></li>
         <li class="icon-img-pdf"><span class="fa fa-print icon-span"></span><span class="text-span">{!! trans('designer.pdf_label') !!}</span></li>
@@ -28,10 +33,22 @@
       <ul>
         <?php $count = 0;?>
         @foreach($designer_img_elments as $row)
+        
         <li <?php if($count == 0) {?> class="selected-swap"<?php }?> data-id="{{ $row->id }}" data-design_img_url="{{ get_image_url($row->design_img_url) }}" data-design_trans_img_url="{{ get_image_url($row->design_trans_img_url) }}"><img src="{{ get_image_url($row->design_title_icon) }}"><span>{!! $row->title_label !!}</span></li>
+        <input type="hidden" name="hf_design_save_json_data_{{$row->id}}" id="hf_design_save_json_data_{{$row->id}}" value="{{ $design_save_data }}">
         <?php $count ++;?>
         @endforeach
-      </ul>
+        @if(isset($designer_img_elmentsback))
+        @if(count($designer_img_elmentsback)>0 )
+        @foreach($designer_img_elmentsback as $row)
+        
+        <li <?php if($count == 0) {?> class="selected-swap"<?php }?> data-id="{{ $row->id }}" data-design_img_url="{{ get_image_url($row->design_img_url) }}" data-design_trans_img_url="{{ get_image_url($row->design_trans_img_url) }}"><img src="{{ get_image_url($row->design_title_icon) }}"><span>{!! $row->title_label !!}</span></li>
+        <input type="hidden" name="hf_design_save_json_data_{{$row->id}}" id="hf_design_save_json_data_{{$row->id}}" value="{{ $design_save_databackside }}">
+        <?php $count ++;?>
+        @endforeach    
+        @endif 
+        @endif
+       </ul>
     </div>
     <div style="clear:both;"></div>
   </div>
@@ -263,7 +280,7 @@
   </div>
   <div id="designer-shadow-layer">
     <div class="designer-add-to-cart-loader">
-      <img src="http://localhost/shopist/public/images/ajax-loader.gif" id="img-load">
+      <img src="/images/ajax-loader.gif" id="img-load">
     </div>
   </div>
 </div>
@@ -271,6 +288,7 @@
 <input type="hidden" name="track_is_loaded_first" id="track_is_loaded_first" value="{{ get_image_url($designer_img_elments[0]->design_img_url) }}">
 <input type="hidden" name="track_is_trans_loaded_first" id="track_is_trans_loaded_first" value="{{ get_image_url($designer_img_elments[0]->design_trans_img_url) }}">
 <input type="hidden" name="hf_design_save_json_data" id="hf_design_save_json_data" value="{{ $design_save_data }}">
+
 <style type="text/css">
   .select2-drop {
     z-index: 99999;

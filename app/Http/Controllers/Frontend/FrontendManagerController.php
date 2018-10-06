@@ -23,6 +23,9 @@ use shopist\Http\Controllers\OptionController;
 use shopist\Models\OrdersItem;
 use shopist\Http\Controllers\VendorsController;
 use shopist\Models\SaveCustomDesign;
+use shopist\Models\Term;
+use Illuminate\Support\Facades\DB;
+
 
 class FrontendManagerController extends Controller
 {
@@ -69,7 +72,12 @@ class FrontendManagerController extends Controller
    * @param null
    * @return void 
    */
-  public function productCategoriesSinglePageContent( $params ){
+  // 900
+  public function ProductFristPageContent(){
+    $category = DB::table('terms')->where('fb', '0')->first();
+    $params =$category->name;
+    // echo $params;
+    // $params = 'brochure Back side';
     $data = array();
     $sort = null;
     $price_min = null;
@@ -100,6 +108,86 @@ class FrontendManagerController extends Controller
     $get_cat_product_and_breadcrumb  =  $this->product->getProductByCatSlug($params, array('sort' => $sort, 'price_min' => $price_min, 'price_max' => $price_max, 'selected_colors' => $selected_colors, 'selected_sizes' => $selected_sizes));
 
     if(count($get_cat_product_and_breadcrumb) > 0){
+      $data = $this->classCommonFunction->get_dynamic_frontend_content_data(); 
+      $data['product_by_cat_id']  =   $get_cat_product_and_breadcrumb;
+      $data['brands_data']        =   $this->product->getTermData( 'product_brands', false, null, 1 );
+      $data['colors_list_data']   =   $this->product->getTermData( 'product_colors', false, null, 1 );
+      $data['sizes_list_data']    =   $this->product->getTermData( 'product_sizes', false, null, 1 );
+    
+      if(count($data['product_by_cat_id']) > 0){
+        $data['product_by_cat_id']['action_url'] = Request::url();
+        
+        $currentQuery = Request::query();
+        
+        if(count($currentQuery) > 0){
+          if(isset($currentQuery['view'])){
+            unset($currentQuery['view']);
+          }
+          
+          if(count($currentQuery) > 0){
+            $currentQuery['view'] = 'list';
+            $data['product_by_cat_id']['action_url_list_view'] = Request::url(). '?' . http_build_query($currentQuery);
+            $currentQuery['view'] = 'grid';
+            $data['product_by_cat_id']['action_url_grid_view'] = Request::url(). '?' . http_build_query($currentQuery);
+          }
+          else{
+            $data['product_by_cat_id']['action_url_list_view'] = Request::url(). '?view=list';
+            $data['product_by_cat_id']['action_url_grid_view'] = Request::url(). '?view=grid';
+          }
+        }
+        else{
+          $data['product_by_cat_id']['action_url_list_view'] = Request::url(). '?view=list';
+          $data['product_by_cat_id']['action_url_grid_view'] = Request::url(). '?view=grid';
+        }
+        
+        if(isset($_GET['view']) && $_GET['view'] == 'list'){
+          $data['product_by_cat_id']['selected_view'] = 'list'; 
+        }
+        elseif(isset($_GET['view']) && $_GET['view'] == 'grid'){
+          $data['product_by_cat_id']['selected_view'] = 'grid'; 
+        }
+        else{
+          $data['product_by_cat_id']['selected_view'] = 'grid';
+        }
+      }
+      
+      return view('pages.frontend.frontend-pages.categories-main', $data);
+    }
+    else{
+      return view('errors.no_data');
+    }
+  }
+  public function productCategoriesSinglePageContent( $params ){
+    $data = array();
+    $sort = null;
+    $price_min = null;
+    $price_max = null;
+    $selected_colors = null;
+    $selected_sizes = null;
+      
+    if(isset($_GET['sort_by'])){
+      $sort = $_GET['sort_by'];
+    }
+      
+    if(isset($_GET['price_min'])){
+      $price_min = $_GET['price_min'];
+    }
+      
+    if(isset($_GET['price_max'])){
+      $price_max = $_GET['price_max'];
+    }
+      
+    if(isset($_GET['selected_colors'])){
+      $selected_colors = $_GET['selected_colors'];
+    }
+
+    if(isset($_GET['selected_sizes'])){
+      $selected_sizes = $_GET['selected_sizes'];
+    }
+      
+    $get_cat_product_and_breadcrumb  =  $this->product->getProductByCatSlug($params);
+
+    if(count($get_cat_product_and_breadcrumb) > 0){ 
       $data = $this->classCommonFunction->get_dynamic_frontend_content_data(); 
       $data['product_by_cat_id']  =   $get_cat_product_and_breadcrumb;
       $data['brands_data']        =   $this->product->getTermData( 'product_brands', false, null, 1 );
@@ -289,6 +377,8 @@ class FrontendManagerController extends Controller
    * @param null
    * @return void 
    */
+
+  //  900
   public function productsPageContent(){
     $data = array();
     $sort = null;
@@ -383,12 +473,30 @@ class FrontendManagerController extends Controller
    * @param null
    * @return void 
    */
+
+
+   
+  //  900
   public function productSinglePageContent( $params ){
     $get_product = Product::where(['slug' => $params, 'status' => 1 ])->first();
       
     if(!empty($get_product)){
       $data = array();
       $product_id  = $get_product->id;
+
+      // $categories_temp = GetFunction::single_page_product_categories_lists($product_id);
+      // $product_type  = $get_product->type;
+      // $categories_index =  explode(",",$categories_temp);
+      // if(count($categories_index) > 1
+      // ){
+      
+      // }
+
+      // if($product_type=="customizable_product"){
+
+
+      // }
+      
       $get_current_user_data  =  get_current_frontend_user_info();
       
       $data = $this->classCommonFunction->get_dynamic_frontend_content_data();
@@ -424,7 +532,9 @@ class FrontendManagerController extends Controller
 
         $data['single_product_details']['solid_price']   = get_product_price_html_by_filter($data['single_product_details']['post_price']);
       }
-
+     
+      
+     
 
       $data['single_product_details']['is_user_login']   = 'no';
       $data['single_product_details']['login_user_slug'] = '';
@@ -435,7 +545,7 @@ class FrontendManagerController extends Controller
 
       if(count($get_current_user_data) > 0 && isset($get_current_user_data['user_role_slug'])){
         $data['single_product_details']['login_user_slug'] = $get_current_user_data['user_role_slug'];
-      }
+      } 
 
       if(Cookie::has('shopist_multi_currency')){
         $current_currency_name = get_current_currency_name();
@@ -450,6 +560,9 @@ class FrontendManagerController extends Controller
         $data['product_zoom_image'] = $this->classCommonFunction->createZoomImageUrl( $product_url );
       }
 
+
+      // 900
+      
       $data['single_product_details']['_product_related_images_url']->product_image = $product_url;
 
 
@@ -464,8 +577,9 @@ class FrontendManagerController extends Controller
       }
 
       $data['attr_lists']               =   $this->product->getAllAttributes( $product_id );
+      // if( $product_id  = $get_product->f)
       $data['related_items']            =   $this->product->getRelatedItems( $product_id ); 
-      
+      $data['backside_items']           =   $this->product->getBacksideItems( $product_id);
       $data['comments_details']         =   get_comments_data_by_object_id( $product_id, 'product' );
       $data['comments_rating_details']  =   get_comments_rating_details( $product_id, 'product' );
       $data['vendor_reviews_rating_details']  =   get_comments_rating_details( get_vendor_id_by_product_id($product_id), 'vendor' );
@@ -1248,9 +1362,197 @@ class FrontendManagerController extends Controller
    * @param null
    * @return void 
    */
-  public function designerSinglePageContent( $params ){
-    $get_product = Product::where(['slug' => $params, 'status' => 1])->first();
+  // 900
+  public function designerSinglePageContents($param1,$param2){
+
+    $frontside=$param1;
+    $backside=$param2;
+    
+    // $frontside = str_replace(" ","-",$fs);
+    // echo $frontside;
+    // exit;
+    //  $get_product1 = Product::where(['slug' => $frontside, 'status' => 1])->first();
+    // $get_product2 = Product::where(['id' => $backside, 'status' => 1])->first();
+    $get_products[] = Product::where(['slug' => $frontside, 'status' => 1])->first();
+
+    $get_products[] = Product::where(['id' => $backside, 'status' => 1])->first();
+
+    
+   
+    foreach ($get_products as $get_product) {
+          
+   
+    if(!empty($get_product)){
+      $data = array();
+      $product_id  = $get_product->id;
+      $get_product_type = get_product_type($product_id);
       
+      if($get_product_type == 'customizable_product'){
+        $get_current_user_data  =  get_current_frontend_user_info();
+
+        $data = $this->classCommonFunction->get_dynamic_frontend_content_data();
+        $data['single_product_details']  =  $this->product->getProductDataById( $product_id );
+        $data['single_product_detailsbackside']  = $this->product->getProductDataById($backside);
+       
+        if(is_frontend_user_logged_in() && isset($get_current_user_data['user_role_slug']) && $data['single_product_details']['_is_role_based_pricing_enable'] == 'yes'){
+          if(isset($data['single_product_details']['_role_based_pricing'][$get_current_user_data['user_role_slug']])){
+
+            $regular_price = $data['single_product_details']['_role_based_pricing'][$get_current_user_data['user_role_slug']]['regular_price'];
+            $sale_price = $data['single_product_details']['_role_based_pricing'][$get_current_user_data['user_role_slug']]['sale_price'];
+
+            if(isset($regular_price) && $regular_price && isset($sale_price) && $sale_price && $regular_price > $sale_price){
+              $data['single_product_details']['offer_price'] = get_product_price_html_by_filter($regular_price);
+              $data['single_product_details']['solid_price'] = get_product_price_html_by_filter($sale_price);
+            }
+            elseif(isset($regular_price) && $regular_price){
+              $data['single_product_details']['offer_price'] = null;
+              $data['single_product_details']['solid_price'] = get_product_price_html_by_filter($regular_price);
+            }
+            else{
+              $data['single_product_details']['offer_price'] = null;
+              $data['single_product_details']['solid_price'] = 0;
+            }
+          }
+        }  
+        else{
+          if($data['single_product_details']['post_regular_price'] && $data['single_product_details']['post_regular_price'] >0 && $data['single_product_details']['post_sale_price'] && $data['single_product_details']['post_sale_price']>0 && $data['single_product_details']['post_regular_price'] > $data['single_product_details']['post_sale_price'] ){
+            $data['single_product_details']['offer_price'] = get_product_price_html_by_filter($data['single_product_details']['post_regular_price']);
+          }
+          else{
+            $data['single_product_details']['offer_price'] = null;
+          }
+
+          $data['single_product_details']['solid_price']   = get_product_price_html_by_filter($data['single_product_details']['post_price']);
+        }
+
+
+        $data['single_product_details']['is_user_login']   = 'no';
+        $data['single_product_details']['login_user_slug'] = '';
+
+        if(is_frontend_user_logged_in()){
+          $data['single_product_details']['is_user_login'] = 'yes';
+        }
+
+        if(count($get_current_user_data) > 0 && isset($get_current_user_data['user_role_slug'])){
+          $data['single_product_details']['login_user_slug'] = $get_current_user_data['user_role_slug'];
+        }
+
+        if(Cookie::has('shopist_multi_currency')){
+          $current_currency_name = get_current_currency_name();
+          $to_currency    =  Cookie::get('shopist_multi_currency');
+        }
+
+        $product_url = default_placeholder_img_src();
+        $data['product_zoom_image'] = $product_url;
+
+        if($data['single_product_details']['_product_related_images_url']->product_image){
+          $product_url = $data['single_product_details']['_product_related_images_url']->product_image;
+          $data['product_zoom_image'] = $this->classCommonFunction->createZoomImageUrl( $product_url );
+        }
+
+        $data['single_product_details']['_product_related_images_url']->product_image = $product_url;
+        $data['single_product_detailsbackside']['_product_related_images_url']->product_image = $product_url;
+
+
+        $product = (object) array('id' => time(), 'url' => $product_url);
+        $data['single_product_details']['_product_related_images_url']->product_gallery_images[0] = $product;
+        $data['single_product_detailsbackside']['_product_related_images_url']->product_gallery_images[0] = $product;
+
+        $gallery_images = $data['single_product_details']['_product_related_images_url']->product_gallery_images;
+        if(count($gallery_images) > 0){
+          foreach($gallery_images as $images){
+            $images->zoom_img_url = $this->classCommonFunction->createZoomImageUrl( $images->url );
+          }
+        }
+
+        $data['attr_lists']               =   $this->product->getAllAttributes( $product_id );
+        $data['related_items']            =   $this->product->getRelatedItems( $product_id );  
+        $data['comments_details']         =   get_comments_data_by_object_id( $product_id, 'product' );
+        $data['comments_rating_details']  =   get_comments_rating_details( $product_id, 'product' );
+        $data['vendor_reviews_rating_details']  =   get_comments_rating_details( get_vendor_id_by_product_id($product_id), 'vendor' );
+        $data['fonts_list']               =   $this->product->getFontsList( false, null, 1 );
+        $data['shape_list']               =   $this->product->getShapeList( false, null, 1 );
+
+
+        $get_seo_data = get_seo_data();
+
+        if(isset($get_seo_data['meta_tag']['meta_keywords']) && isset($data['single_product_details']['_product_seo_keywords'])){
+          $data['single_product_details']['meta_keywords'] = trim( trim($get_seo_data['meta_tag']['meta_keywords'], ','). ',' .trim($data['single_product_details']['_product_seo_keywords'], ','), ',');
+        }
+        elseif(!isset($get_seo_data['meta_tag']['meta_keywords']) && isset($data['single_product_details']['_product_seo_keywords'])){
+          $data['single_product_details']['meta_keywords'] = trim($data['single_product_details']['_product_seo_keywords'], ',');
+        }
+        elseif(isset($get_seo_data['meta_tag']['meta_keywords']) && !isset($data['single_product_details']['_product_seo_keywords'])){
+          $data['single_product_details']['meta_keywords'] = trim($get_seo_data['meta_tag']['meta_keywords'], ',');
+        }
+        else{
+          $data['single_product_details']['meta_keywords'] = null;
+        }
+
+        $data['upsell_products'] = get_upsell_products( $product_id );
+        $data['designer_settings'] = $this->option->getCustomDesignerSettingsData();
+        $data['art_cat_lists_data']  =   $this->product->getTermData( 'designer_cat', false, null, 1 );
+
+        if($data['single_product_details']['_product_custom_designer_settings']['enable_global_settings'] == 'yes'){
+          if(count($data['designer_settings'])>0){
+            $data['designer_hf_data'] = $data['designer_settings']['general_settings'];
+          }
+        }
+        elseif($data['single_product_details']['_product_custom_designer_settings']['enable_global_settings'] == 'no'){
+          if(count($data['single_product_details']['_product_custom_designer_settings']) >0){
+            $data['designer_hf_data'] = $data['single_product_details']['_product_custom_designer_settings'];
+            $data['designer_hf_databackside'] = $data['single_product_detailsbackside']['_product_custom_designer_settings'];
+          }
+        }
+
+        $get_data = SaveCustomDesign ::where('product_id', $product_id)->first();
+
+        if(!empty($get_data)){
+          $data['design_json_data'] = $get_data['design_data'];
+        }
+        else{
+          return view('errors.no_data');
+          
+        }
+
+        $get_databack = SaveCustomDesign ::where('product_id',$backside)->first();
+         if(!empty($get_databack)){
+          $data['design_json_databackside'] = $get_databack['design_data'];
+        }
+        else{
+          return view('errors.no_data');
+          
+        }
+
+
+        return view('pages.frontend.frontend-pages.frontend-designer', $data);
+      }
+      else{
+        return view('errors.no_data');
+      }
+    }
+    else{
+      return view('errors.no_data');
+    }
+    }
+  }
+  
+// 900
+  public function designerSinglePageContent($params){
+
+    
+    
+    // $frontside = str_replace(" ","-",$fs);
+    // echo $frontside;
+    // exit;
+    //  $get_product1 = Product::where(['slug' => $frontside, 'status' => 1])->first();
+    // $get_product2 = Product::where(['id' => $backside, 'status' => 1])->first();
+    $get_product = Product::where(['slug' => $params, 'status' => 1])->first();
+    
+    // print_r($get_product);  
+    // exit; 
+          
+   
     if(!empty($get_product)){
       $data = array();
       $product_id  = $get_product->id;
@@ -1375,6 +1677,10 @@ class FrontendManagerController extends Controller
         if(!empty($get_data)){
           $data['design_json_data'] = $get_data['design_data'];
         }
+        else{
+          return view('errors.no_data');
+          
+        }
 
         return view('pages.frontend.frontend-pages.frontend-designer', $data);
       }
@@ -1385,8 +1691,8 @@ class FrontendManagerController extends Controller
     else{
       return view('errors.no_data');
     }
+    
   }
-  
   /**
    * 
    * Checkout received order

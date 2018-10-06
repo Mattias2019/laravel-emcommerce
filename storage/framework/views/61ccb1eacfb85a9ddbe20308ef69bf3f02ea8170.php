@@ -187,7 +187,7 @@
           <?php if(count(get_product_brands_lists($single_product_details['id'])) > 0): ?>
             <p><label><?php echo e(trans('frontend.brand_label')); ?>:</label><span><?php echo e(get_single_page_product_brands_lists( get_product_brands_lists($single_product_details['id']) )); ?></span></p>
           <?php endif; ?>
-          
+          <!-- 900 -->
           <?php if(get_single_page_product_categories_lists($single_product_details['id'])): ?>
             <p><label><?php echo e(trans('frontend.category_label')); ?>:</label><span><?php echo e(get_single_page_product_categories_lists($single_product_details['id'])); ?></span></p>
           <?php endif; ?>
@@ -435,8 +435,8 @@
         </div>
       </div>
     </div>  
-            
-    <?php if(count($related_items) > 0): ?>    
+          
+    <?php if(count($related_items) > 0 && get_product_type($single_product_details['id']) != 'customizable_product'): ?>   
     <div class="row">
       <div id="related_products">
         <div class="content-title">
@@ -537,11 +537,83 @@
                 </div>
               </div>
             </div>
+          
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>      
       </div>
     </div>
     <?php endif; ?>
+<!-- 900 -->
+  <!-- backside product -->
+     <?php if(count($backside_items) > 0 && get_product_type($single_product_details['id']) == 'customizable_product'): ?>   
+    <div class="row">
+      <div id="related_products">
+        <div class="content-title">
+          <h2 class="text-center title-under">Select your '<?php echo explode(",",get_single_page_product_categories_lists($single_product_details['id']))[0]; ?>' BackSide</h2>
+        </div>
+        
+        <div class="related-products-content">
+          <?php $__currentLoopData = $backside_items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $products): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php 
+            $reviews          = get_comments_rating_details($products['id'], 'product');
+            $reviews_settings = get_reviews_settings_data($products['id']);      
+            ?>
+            <div class="col-xs-12 col-sm-3 col-md-3 extra-padding grid-view">
+              <div class="hover-product">
+                <div class="hover">
+                  <?php if($products['_product_related_images_url']->product_image): ?>
+                  <img class="img-responsive" src="<?php echo e(get_image_url($products['_product_related_images_url']->product_image)); ?>" alt="<?php echo e(basename($products['_product_related_images_url']->product_image)); ?>" />
+                  <?php else: ?>
+                  <img class="img-responsive" src="<?php echo e(default_placeholder_img_src()); ?>" alt="" />
+                  <?php endif; ?>
+
+                 
+                  <div class="overlay">
+                    <!-- <button class="info quick-view-popup" data-id="<?php echo e($products['id']); ?>"><?php echo e(trans('frontend.quick_view_label')); ?></button> -->
+                
+                    <input type="radio" name="sbs" value="<?php echo e($products['id']); ?>" id="<?php echo e($products['id']); ?>" class="form-radio" checked></label>
+                  </div>
+                </div> 
+
+                <div class="single-product-bottom-section">
+                  <h3><?php echo get_product_title($products['id']); ?> </h3>
+
+                 
+                </div>
+              </div>
+            </div>
+          
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </div>      
+      </div>
+    </div>
+   
+    <!-- <a disabled href="<?php echo e(route('customize-page', $single_product_details['post_slug'])); ?>" class="btn btn-lg btn-success  product-customize-bg continue"><i class="fa fa-wrench"></i>  <?php echo trans('Continue'); ?></a> -->
+    <a disabled href="javascript:void()" onclick="gotopage()" class="btn btn-lg btn-success  product-customize-bg continue"><i class="fa fa-wrench"></i>  <?php echo trans('Continue'); ?></a>
+
+    <?php endif; ?>
+<script type="text/javascript">
+  function gotopage(){
+    var backside_id=$("input[name='sbs']:checked"). val()
+    location.href="/product/customize/<?php echo e(str_replace(" ","-", $single_product_details['post_title'])); ?>/"+backside_id;
+  }  
+$(document).ready(function() {
+   $('.form-radio').click(function(){
+       $("a").removeAttr('disabled');
+
+       $('.continue').removeClass('btn-success');
+       $('.continue').addClass('btn-style');
+      //  $('a').attr('enabled','enabled'); 
+   });
+});
+
+
+</script>      
+
+
+
+
+
     
     <?php if(count($upsell_products) > 0): ?>
     <br>

@@ -50,10 +50,12 @@
           <div data-id="<?php echo e($row->id); ?>" data-design_img_url="<?php echo e(get_image_url($row->design_img_url)); ?>" data-design_trans_img_url="<?php echo e(get_image_url($row->design_trans_img_url)); ?>" class="design-title-items">
             <div><img src="<?php echo e(get_image_url($row->design_title_icon)); ?>"></div>
             <div class="design-title-label"><?php echo $row->title_label; ?></div>
+            <input type="hidden" name="hf_design_save_json_data" id="hf_design_save_json_data_<?php echo e($row->id); ?>" value="<?php echo e($design_save_data); ?>">
+
           </div>
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
-        
+      
         
         <div class="canvas-design-panel">
           <canvas id="designer_canvas"></canvas>

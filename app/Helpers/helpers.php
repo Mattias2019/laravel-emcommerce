@@ -29,6 +29,8 @@ function get_product_slug($product_id = '')
  * @param product id
  * @return json obj
  */
+
+// 900
 function get_product_image($product_id = '')
 {
   return GetFunction::product_img($product_id);

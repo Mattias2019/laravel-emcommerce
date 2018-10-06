@@ -205,7 +205,7 @@
         
       <div class="row">
         <div class="categories-products-list">
-          @include('pages.frontend.frontend-pages.categories-products')
+          <!-- @include('pages.frontend.frontend-pages.categories-products') -->
           @yield('categories-products-content')
         </div>
       </div>  

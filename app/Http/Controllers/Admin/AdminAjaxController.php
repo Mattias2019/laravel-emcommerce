@@ -736,6 +736,7 @@ class AdminAjaxController extends Controller
           $regular_price  = '';
           $sale_price     = '';
           $stock_qty      = 0;
+          $pfb            = 0;
           $status         = false;
           $role_price = array();
           $downloadable_data = array();

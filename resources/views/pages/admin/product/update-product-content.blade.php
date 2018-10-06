@@ -1528,6 +1528,7 @@
           </div>
         </div>
       </div>
+      <!-- 900 -->
       <div class="box box-solid product-categories">
         <div class="box-header with-border">
           <i class="fa fa-camera"></i>
@@ -1559,6 +1560,10 @@
           </div>
         </div>
       </div>
+
+
+
+
       <div class="box box-solid product-tags">
         <div class="box-header with-border">
           <i class="fa fa-tags"></i>
@@ -1677,9 +1682,8 @@
         </div>
       </div> 
 
-
-      <!-- custom categories -->  
-       <div class="box box-solid product-categories ccc">
+     <!-- custom categories -->  
+       <div class="box box-solid product-categories ccc" style="display: block">
         <div class="box-header with-border">
           <i class="fa fa-cogs"></i>
           <h3 class="box-title">{!! trans('Customizable Product Category') !!}</h3>
@@ -1694,10 +1698,10 @@
                 <div class="form-group">
                   <label class="col-sm-1 control-label" for="inputSelectCategories"></label>
                   <div class="col-sm-11">
-                    @if (count($categories_lists) > 0)
-                      <ul>
-                      @foreach ($categories_lists as $data)
-                          @include('pages.common.category-list', $data)
+                    @if (count($categories_customlists) > 0)
+                    <ul>
+                      @foreach ($categories_customlists as $data)
+                          @include('pages.common.update-customcategory-list', $data)
                       @endforeach
                       </ul>
                     @else
@@ -1711,8 +1715,10 @@
         </div>
       </div>
 
+ 
+
       <!-- custom tags -->
-      <div class="box box-solid product-tags ccc">
+      <div class="box box-solid product-tags ccc" style="display: block">
         <div class="box-header with-border">
           <i class="fa fa-cog"></i>
           <h3 class="box-title">{!! trans('Customizable Product Category') !!}</h3>
@@ -1742,23 +1748,32 @@
           </div>
         </div>
       </div>
+<!-- 9000 -->
+
+             
 
       
+         
+
 <script type="text/javascript">
  $(document).ready(function() {  
+   
    $("#change_product_type").change(function () {
      if($("#change_product_type").val()=='customizable_product'){
       $(".ccc").css("display", "block");
       $(".cca").css("display", "none");
+      // $("#eb_product_Pfb").val("0");
+
     } else {
      $(".ccc").css("display", "none");
      $(".cca").css("display", "block");
+      //  $("#eb_product_Pfb").val("1");
+
    }
    });
    
     
    });
-   
 
 </script>
         

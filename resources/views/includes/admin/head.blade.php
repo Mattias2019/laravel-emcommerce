@@ -27,6 +27,7 @@
 <script type="text/javascript" src="{{ URL::asset('public/plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('public/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('public/dropzone/dropzone.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('/dropzone/dropzone1.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('public/sweetalert/sweetalert.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('public/bootstrap/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('public/plugins/datepicker/bootstrap-datepicker.js') }}"></script>

@@ -1542,6 +1542,7 @@
           </div>
         </div>
       </div>
+      <!-- 900 -->
       <div class="box box-solid product-categories">
         <div class="box-header with-border">
           <i class="fa fa-camera"></i>
@@ -1573,6 +1574,10 @@
           </div>
         </div>
       </div>
+
+
+
+
       <div class="box box-solid product-tags">
         <div class="box-header with-border">
           <i class="fa fa-tags"></i>
@@ -1691,9 +1696,8 @@
         </div>
       </div> 
 
-
-      <!-- custom categories -->  
-       <div class="box box-solid product-categories ccc">
+     <!-- custom categories -->  
+       <div class="box box-solid product-categories ccc" style="display: block">
         <div class="box-header with-border">
           <i class="fa fa-cogs"></i>
           <h3 class="box-title"><?php echo trans('Customizable Product Category'); ?></h3>
@@ -1708,10 +1712,10 @@
                 <div class="form-group">
                   <label class="col-sm-1 control-label" for="inputSelectCategories"></label>
                   <div class="col-sm-11">
-                    <?php if(count($categories_lists) > 0): ?>
-                      <ul>
-                      <?php $__currentLoopData = $categories_lists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                          <?php echo $__env->make('pages.common.category-list', $data, array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                    <?php if(count($categories_customlists) > 0): ?>
+                    <ul>
+                      <?php $__currentLoopData = $categories_customlists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                          <?php echo $__env->make('pages.common.update-customcategory-list', $data, array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
                       <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                       </ul>
                     <?php else: ?>
@@ -1725,8 +1729,10 @@
         </div>
       </div>
 
+ 
+
       <!-- custom tags -->
-      <div class="box box-solid product-tags ccc">
+      <div class="box box-solid product-tags ccc" style="display: block">
         <div class="box-header with-border">
           <i class="fa fa-cog"></i>
           <h3 class="box-title"><?php echo trans('Customizable Product Category'); ?></h3>
@@ -1756,23 +1762,32 @@
           </div>
         </div>
       </div>
+<!-- 9000 -->
+
+             
 
       
+         
+
 <script type="text/javascript">
  $(document).ready(function() {  
+   
    $("#change_product_type").change(function () {
      if($("#change_product_type").val()=='customizable_product'){
       $(".ccc").css("display", "block");
       $(".cca").css("display", "none");
+      // $("#eb_product_Pfb").val("0");
+
     } else {
      $(".ccc").css("display", "none");
      $(".cca").css("display", "block");
+      //  $("#eb_product_Pfb").val("1");
+
    }
    });
    
     
    });
-   
 
 </script>
         

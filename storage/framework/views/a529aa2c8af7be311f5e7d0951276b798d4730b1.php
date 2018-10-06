@@ -27,7 +27,8 @@
           <input type="text" placeholder="<?php echo e(trans('admin.example_red_t_shirt')); ?>" class="form-control" name="product_name" id="eb_product_name" value="<?php echo e(old('product_name')); ?>">
         </div>
       </div>
-      
+      <!-- 900 -->
+      <input type="hidden" name="product_Pfb" value="0" id="eb_product_Pfb">
       <div class="box box-solid">
         <div class="box-header with-border">
           <i class="fa fa-text-width"></i>
@@ -1097,25 +1098,20 @@
      if($("#change_product_type").val()=='customizable_product'){
       $(".ccc").css("display", "block");
       $(".cca").css("display", "none");
+      $("#eb_product_Pfb").val("1");
+
     } else {
      $(".ccc").css("display", "none");
      $(".cca").css("display", "block");
+       $("#eb_product_Pfb").val("0");
 
    }
    });
    
     
    });
-   
 
 </script>
-
-
-     
-
-
-
-
         
       <?php if(!is_vendor_login() && count($vendors_list) > 0): ?>  
       <div class="box box-solid product-sizes">

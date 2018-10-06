@@ -58,6 +58,7 @@
 <link rel="stylesheet" href="{{ URL::asset('public/modal/css/modal-extra.css') }}" />
 <link rel="stylesheet" href="{{ URL::asset('public/slick/slick.css') }}" />
 <link rel="stylesheet" href="{{ URL::asset('public/slick/slick-theme.css') }}" />
+<link rel="stylesheet" href="{{ URL::asset('public/frontend/css/custom.css') }}" />
 
 <link rel="stylesheet" href="{{ URL::asset('public/templates-assets/footer/black-crazy/style.css') }}" />
 

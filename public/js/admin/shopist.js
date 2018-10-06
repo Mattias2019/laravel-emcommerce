@@ -2699,6 +2699,7 @@ shopist.ajaxRequest =
     var back_order              =   '';
     var stock_status            =   '';
     var enable_tax              =   0;
+    var pfb                     =   0;
     var variation_description   =   '';
     var variation_json_data     =   '';
     var roles_pricing = [];
@@ -2726,8 +2727,11 @@ shopist.ajaxRequest =
       regular_price  =   $('#inputVariationRegularPrice').val();
     }
     
-    if($('#inputVariationSalePrice').val().length >0){
-      sale_price  =   $('#inputVariationSalePrice').val();
+    if($('#inputVariationPfb').val().length >0){
+      pfb  =   $('#inputVariationPfb').val();
+    }
+    if ($('#inputVariationSalePrice').val().length > 0) {
+      sale_price = $('#inputVariationSalePrice').val();
     }
     
     if($('#inputVariationSalePriceStartDate').val().length >0){
@@ -2812,6 +2816,7 @@ shopist.ajaxRequest =
     dataObj.variation_sku           =   sku;
     dataObj.regular_price           =   regular_price;
     dataObj.sale_price              =   sale_price;
+    dataObj.pfb                     =   pfb;
     dataObj.sale_price_start_date   =   sale_price_start_date;
     dataObj.sale_price_end_date     =   sale_price_end_date;
     dataObj.manage_stock            =   enable_stock_management;
